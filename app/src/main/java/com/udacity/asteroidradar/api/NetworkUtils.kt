@@ -1,11 +1,34 @@
 package com.udacity.asteroidradar.api
 
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.Constants
 import org.json.JSONObject
+import retrofit2.Retrofit
+import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.reflect.KClass
+
+private val moshi = Moshi.Builder()
+    .add(KotlinJsonAdapterFactory())
+    .build()
+
+private fun provideRetrofitMoshi(baseUrl: String) = Retrofit.Builder()
+    .baseUrl(baseUrl)
+    .addConverterFactory(MoshiConverterFactory.create(moshi))
+    .build()
+
+private fun provideRetrofitScalars(baseUrl: String) = Retrofit.Builder()
+    .baseUrl(baseUrl)
+    .addConverterFactory(ScalarsConverterFactory.create())
+    .build()
+
+fun <T : Any> createHttpClientMoshi(baseUrl: String, clazz: KClass<T>): T = provideRetrofitMoshi(baseUrl).create(clazz.java)
+fun <T : Any> createHttpClientScalars(baseUrl: String, clazz: KClass<T>): T = provideRetrofitScalars(baseUrl).create(clazz.java)
 
 fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
     val nearEarthObjectsJson = jsonResult.getJSONObject("near_earth_objects")
@@ -33,8 +56,10 @@ fun parseAsteroidsJsonResult(jsonResult: JSONObject): ArrayList<Asteroid> {
             val isPotentiallyHazardous = asteroidJson
                 .getBoolean("is_potentially_hazardous_asteroid")
 
-            val asteroid = Asteroid(id, codename, formattedDate, absoluteMagnitude,
-                estimatedDiameter, relativeVelocity, distanceFromEarth, isPotentiallyHazardous)
+            val asteroid = Asteroid(
+                id, codename, formattedDate, absoluteMagnitude,
+                estimatedDiameter, relativeVelocity, distanceFromEarth, isPotentiallyHazardous
+            )
             asteroidList.add(asteroid)
         }
     }
