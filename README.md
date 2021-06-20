@@ -45,8 +45,8 @@ implementation "com.squareup.retrofit2:converter-moshi:2.5.0"
 implementation 'com.squareup.retrofit2:converter-scalars:2.5.0'
 
 // Kotlin coroutines
-implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.8"
-implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.1"
+implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:1.4.3"
+implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.4.3"
 implementation "com.jakewharton.retrofit:retrofit2-kotlin-coroutines-adapter:0.9.2"
 
 implementation "androidx.recyclerview:recyclerview:1.1.0"
@@ -57,7 +57,7 @@ implementation 'com.squareup.picasso:picasso:2.5.2'
 implementation "androidx.room:room-runtime:2.2.5"
 kapt "androidx.room:room-compiler:2.2.5"
 
-implementation "android.arch.work:work-runtime-ktx:1.0.1"
+implementation "androidx.work:work-runtime-ktx:2.6.0-beta01"
 
 testImplementation 'junit:junit:4.13.2'
 androidTestImplementation 'androidx.test.ext:junit:1.1.2'
