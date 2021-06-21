@@ -1,6 +1,7 @@
 package com.udacity.asteroidradar.api
 
 import com.udacity.asteroidradar.Constants
+import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -10,7 +11,7 @@ interface NasaApiService {
         @Query("start_date") startDate: String = "2015-09-07",
         @Query("end_date") endDate: String = "2015-09-08",
         @Query("api_key") apiKey: String = ""
-    ): String
+    ): Deferred<String>
 
     @GET("planetary/apod")
     suspend fun getImageOfDay(
