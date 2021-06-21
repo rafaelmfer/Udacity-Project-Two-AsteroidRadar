@@ -20,7 +20,7 @@ class NasaRepository(private val database: AsteroidsDatabase) {
 
     suspend fun getAsteroids() {
         withContext(Dispatchers.IO) {
-            val asteroidsFromApi = parseAsteroidsJsonResult(JSONObject(NasaApi.retrofitServiceMoshi.getAsteroids().await()))
+            val asteroidsFromApi = parseAsteroidsJsonResult(JSONObject(NasaApi.retrofitServiceScalars.getAsteroids()))
             database.asteroidDatabaseDao.insertAll(*asteroidsFromApi.asDatabaseModel())
         }
     }

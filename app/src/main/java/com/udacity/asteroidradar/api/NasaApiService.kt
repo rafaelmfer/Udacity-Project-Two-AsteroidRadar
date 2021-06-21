@@ -1,17 +1,16 @@
 package com.udacity.asteroidradar.api
 
 import com.udacity.asteroidradar.Constants
-import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface NasaApiService {
+
     @GET("neo/rest/v1/feed")
     suspend fun getAsteroids(
-        @Query("start_date") startDate: String = "2015-09-07",
-        @Query("end_date") endDate: String = "2015-09-08",
+        @Query("end_date") endDate: String = getNextSevenDaysFormattedDates().last(),
         @Query("api_key") apiKey: String = ""
-    ): Deferred<String>
+    ): String
 
     @GET("planetary/apod")
     suspend fun getImageOfDay(
