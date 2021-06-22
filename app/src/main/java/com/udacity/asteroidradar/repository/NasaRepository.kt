@@ -7,6 +7,7 @@ import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.api.NasaApi
 import com.udacity.asteroidradar.api.asDatabaseModel
+import com.udacity.asteroidradar.api.getNextSevenDaysFormattedDates
 import com.udacity.asteroidradar.api.parseAsteroidsJsonResult
 import com.udacity.asteroidradar.database.AsteroidsDatabase
 import com.udacity.asteroidradar.database.asDomainModel
@@ -15,10 +16,6 @@ import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
 class NasaRepository(private val database: AsteroidsDatabase) {
-
-    val asteroids: LiveData<List<Asteroid>> = Transformations.map(database.asteroidDatabaseDao.getAllAsteroids()) {
-        it.asDomainModel()
-    }
 
     val pictureOfDay =  MutableLiveData<PictureOfDay>()
 
@@ -33,6 +30,18 @@ class NasaRepository(private val database: AsteroidsDatabase) {
         withContext(Dispatchers.IO) {
             val pictureOfDayFromApi = NasaApi.retrofitServiceMoshi.getImageOfDay()
             pictureOfDay.postValue(pictureOfDayFromApi)
+        }
+    }
+
+    fun getAsteroidsStartingToday(): LiveData<List<Asteroid>> {
+        return Transformations.map(database.asteroidDatabaseDao.getAllAsteroids(getNextSevenDaysFormattedDates()[0])) {
+            it.asDomainModel()
+        }
+    }
+
+    fun getAllTodayAsteroids(): LiveData<List<Asteroid>> {
+        return Transformations.map(database.asteroidDatabaseDao.getAllTodayAsteroids(getNextSevenDaysFormattedDates()[0])) {
+            it.asDomainModel()
         }
     }
 }

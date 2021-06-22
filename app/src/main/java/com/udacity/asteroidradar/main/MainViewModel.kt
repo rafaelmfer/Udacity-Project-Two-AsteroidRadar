@@ -16,7 +16,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val database = AsteroidsDatabase.getInstance(application.applicationContext)
     private val nasaRepository = NasaRepository(database)
 
-    val asteroids: LiveData<List<Asteroid>> = nasaRepository.asteroids
+    val asteroids: LiveData<List<Asteroid>> = nasaRepository.getAsteroidsStartingToday()
     val pictureOfDay: LiveData<PictureOfDay> = nasaRepository.pictureOfDay
 
     private val _navigateToDetailFragment = MutableLiveData<Asteroid>()
