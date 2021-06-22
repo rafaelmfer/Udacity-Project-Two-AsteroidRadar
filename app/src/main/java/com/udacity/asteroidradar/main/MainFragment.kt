@@ -9,20 +9,28 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.R
 import com.udacity.asteroidradar.databinding.FragmentMainBinding
 
-class MainFragment : Fragment(R.layout.fragment_main) {
+class MainFragment : Fragment(R.layout.fragment_main), OnClickAsteroid {
 
     private lateinit var binding: FragmentMainBinding
     private val viewModel by viewModels<MainViewModel>()
     private val mainAdapter: MainAdapter = MainAdapter()
+
+
+    override fun onClickAsteroid(selectedAsteroid: Asteroid) {
+        viewModel.onAsteroidClicked(selectedAsteroid)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this@MainFragment
         binding.viewModel = viewModel
         setHasOptionsMenu(true)
+        mainAdapter.setListener(this@MainFragment)
         binding.asteroidRecycler.adapter = mainAdapter
         return binding.root
     }
@@ -42,8 +50,18 @@ class MainFragment : Fragment(R.layout.fragment_main) {
     }
 
     private fun observables() {
-        viewModel.asteroids.observe(viewLifecycleOwner, {
-            mainAdapter.asteroidList = it
-        })
+        viewModel.run {
+
+            asteroids.observe(viewLifecycleOwner, {
+                mainAdapter.asteroidList = it
+            })
+
+            navigateToDetailFragment.observe(viewLifecycleOwner, { asteroid ->
+                asteroid?.let {
+                    findNavController().navigate(MainFragmentDirections.actionShowDetail(it))
+                    viewModel.onDetailFragmentNavigated()
+                }
+            })
+        }
     }
 }

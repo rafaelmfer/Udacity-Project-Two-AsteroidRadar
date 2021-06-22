@@ -6,6 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.databinding.ItemAsteroidBinding
 
+interface OnClickAsteroid {
+    fun onClickAsteroid(selectedAsteroid: Asteroid)
+}
+
 class MainAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var asteroidList = listOf<Asteroid>()
@@ -13,6 +17,8 @@ class MainAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             field = value
             notifyDataSetChanged()
         }
+
+    private var listener: OnClickAsteroid? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return MainViewHolder.from(parent)
@@ -23,15 +29,20 @@ class MainAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder) {
             is MainViewHolder -> {
-                holder.bind(asteroidList[position])
+                holder.bind(asteroidList[position], listener)
             }
         }
     }
 
+    fun setListener(listener: OnClickAsteroid) {
+        this.listener = listener
+    }
+
     class MainViewHolder private constructor(private val binding: ItemAsteroidBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Asteroid) {
+        fun bind(item: Asteroid, listener: OnClickAsteroid?) {
             binding.asteroid = item
+            binding.onClickAsteroidListener = listener
             binding.executePendingBindings()
         }
 

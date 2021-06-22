@@ -3,6 +3,7 @@ package com.udacity.asteroidradar.main
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.database.AsteroidsDatabase
@@ -16,9 +17,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val asteroids: LiveData<List<Asteroid>> = nasaRepository.asteroids
 
+    private val _navigateToDetailFragment = MutableLiveData<Asteroid>()
+    val navigateToDetailFragment get() = _navigateToDetailFragment
+
     init {
         viewModelScope.launch {
             nasaRepository.getAsteroids()
         }
+    }
+
+    fun onAsteroidClicked(asteroid: Asteroid) {
+        _navigateToDetailFragment.value = asteroid
+    }
+
+    fun onDetailFragmentNavigated() {
+        _navigateToDetailFragment.value = null
     }
 }
