@@ -34,13 +34,13 @@ class NasaRepository(private val database: AsteroidsDatabase) {
     }
 
     fun getAsteroidsStartingToday(): LiveData<List<Asteroid>> {
-        return Transformations.map(database.asteroidDatabaseDao.getAllAsteroids(getNextSevenDaysFormattedDates()[0])) {
+        return Transformations.map(database.asteroidDatabaseDao.getAllAsteroids(getNextSevenDaysFormattedDates().first())) {
             it.asDomainModel()
         }
     }
 
     fun getAllTodayAsteroids(): LiveData<List<Asteroid>> {
-        return Transformations.map(database.asteroidDatabaseDao.getAllTodayAsteroids(getNextSevenDaysFormattedDates()[0])) {
+        return Transformations.map(database.asteroidDatabaseDao.getAllTodayAsteroids(getNextSevenDaysFormattedDates().first())) {
             it.asDomainModel()
         }
     }
