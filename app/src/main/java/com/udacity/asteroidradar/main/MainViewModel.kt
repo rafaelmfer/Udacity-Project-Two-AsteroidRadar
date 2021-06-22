@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.udacity.asteroidradar.Asteroid
+import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.AsteroidsDatabase
 import com.udacity.asteroidradar.repository.NasaRepository
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val nasaRepository = NasaRepository(database)
 
     val asteroids: LiveData<List<Asteroid>> = nasaRepository.asteroids
+    val pictureOfDay: LiveData<PictureOfDay> = nasaRepository.pictureOfDay
 
     private val _navigateToDetailFragment = MutableLiveData<Asteroid>()
     val navigateToDetailFragment get() = _navigateToDetailFragment
@@ -23,6 +25,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     init {
         viewModelScope.launch {
             nasaRepository.getAsteroids()
+            nasaRepository.getPictureOfDay()
         }
     }
 
