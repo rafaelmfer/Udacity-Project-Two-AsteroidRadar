@@ -48,7 +48,19 @@ class MainFragment : Fragment(R.layout.fragment_main), OnClickAsteroid {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return true
+        // Handle item selection
+        return when (item.itemId) {
+            R.id.show_all_week_menu -> {
+                true
+            }
+            R.id.show_today_menu -> {
+                true
+            }
+            R.id.show_saved_menu -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     private fun observables() {
