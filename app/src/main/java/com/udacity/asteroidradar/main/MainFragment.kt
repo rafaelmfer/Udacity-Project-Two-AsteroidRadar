@@ -51,12 +51,15 @@ class MainFragment : Fragment(R.layout.fragment_main), OnClickAsteroid {
         // Handle item selection
         return when (item.itemId) {
             R.id.show_all_week_menu -> {
+                viewModel.getAsteroidsFiltered(Filter.WEEK)
                 true
             }
             R.id.show_today_menu -> {
+                viewModel.getAsteroidsFiltered(Filter.TODAY)
                 true
             }
             R.id.show_saved_menu -> {
+                viewModel.getAsteroidsFiltered(Filter.WEEK)
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -66,9 +69,9 @@ class MainFragment : Fragment(R.layout.fragment_main), OnClickAsteroid {
     private fun observables() {
         viewModel.run {
 
-            asteroids.observe(viewLifecycleOwner, {
+            asteroids.observeForever {
                 mainAdapter.asteroidList = it
-            })
+            }
 
             pictureOfDay.observe(viewLifecycleOwner, {
                 handlerImageOfDay(it)
