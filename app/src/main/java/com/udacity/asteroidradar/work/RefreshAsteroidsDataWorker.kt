@@ -21,6 +21,7 @@ class RefreshAsteroidsDataWorker(appContext: Context, params: WorkerParameters) 
             nasaRepository.getAsteroids()
             Result.success()
         } catch (e: HttpException) {
+            e.printStackTrace()
             Result.retry()
         }
     }

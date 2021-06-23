@@ -19,7 +19,8 @@ import retrofit2.HttpException
 
 class NasaRepository(private val database: AsteroidsDatabase) {
 
-    val pictureOfDay =  MutableLiveData<PictureOfDay>()
+    val pictureOfDay = MutableLiveData<PictureOfDay>()
+    val errorAPI = MutableLiveData<String>()
 
     suspend fun getAsteroids() {
         withContext(Dispatchers.IO) {
@@ -27,17 +28,24 @@ class NasaRepository(private val database: AsteroidsDatabase) {
                 val asteroidsFromApi = parseAsteroidsJsonResult(JSONObject(NasaApi.retrofitServiceScalars.getAsteroids()))
                 database.asteroidDatabaseDao.insertAll(*asteroidsFromApi.asDatabaseModel())
             } catch (exception: HttpException) {
-
+                exception.printStackTrace()
+                errorAPI.postValue("${exception.code()} ${exception.message()}")
             } catch (exception: JSONException) {
-
+                exception.printStackTrace()
+                errorAPI.postValue("${exception.message}")
             }
         }
     }
 
     suspend fun getPictureOfDay() {
         withContext(Dispatchers.IO) {
-            val pictureOfDayFromApi = NasaApi.retrofitServiceMoshi.getImageOfDay()
-            pictureOfDay.postValue(pictureOfDayFromApi)
+            try {
+                val pictureOfDayFromApi = NasaApi.retrofitServiceMoshi.getImageOfDay()
+                pictureOfDay.postValue(pictureOfDayFromApi)
+            } catch (exception: HttpException) {
+                exception.printStackTrace()
+                errorAPI.postValue("${exception.code()} ${exception.message()}")
+            }
         }
     }
 

@@ -10,6 +10,7 @@ import com.udacity.asteroidradar.Asteroid
 import com.udacity.asteroidradar.PictureOfDay
 import com.udacity.asteroidradar.database.AsteroidsDatabase
 import com.udacity.asteroidradar.repository.NasaRepository
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
 
 enum class Filter {
@@ -34,15 +35,44 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val pictureOfDay: LiveData<PictureOfDay> = nasaRepository.pictureOfDay
 
+    val errorAPI: LiveData<String> = nasaRepository.errorAPI
+
+    private val _errorNoInternetConnection = MutableLiveData<String>()
+    val errorNoInternetConnection: LiveData<String> = _errorNoInternetConnection
+
     private val _navigateToDetailFragment = MutableLiveData<Asteroid>()
     val navigateToDetailFragment get() = _navigateToDetailFragment
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, exception ->
+        _errorNoInternetConnection.postValue("${exception.message}")
+    }
+
     init {
+        getAsteroids()
+        getPictureOfDay()
+    }
+
+    private fun getAsteroids() {
+        /**
+         * Used Try/Catch for CoroutineException (No Internet Connection = Unknown Host)
+         */
         viewModelScope.launch {
-            nasaRepository.getAsteroids()
+            try {
+                nasaRepository.getAsteroids()
+            } catch (exception: Exception) {
+                _errorNoInternetConnection.postValue("${exception.message}")
+            }
+            _queryAsteroid.postValue(Filter.WEEK)
+        }
+    }
+
+    private fun getPictureOfDay() {
+        /**
+         * Other method for CoroutineException (No Internet Connection = Unknown Host)
+         */
+        viewModelScope.launch(exceptionHandler) {
             nasaRepository.getPictureOfDay()
         }
-        _queryAsteroid.postValue(Filter.WEEK)
     }
 
     fun getAsteroidsFiltered(filter: Filter) {

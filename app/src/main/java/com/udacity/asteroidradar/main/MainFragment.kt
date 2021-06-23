@@ -7,6 +7,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
@@ -69,12 +70,20 @@ class MainFragment : Fragment(R.layout.fragment_main), OnClickAsteroid {
     private fun observables() {
         viewModel.run {
 
-            asteroids.observeForever {
+            asteroids.observe(viewLifecycleOwner, {
                 mainAdapter.asteroidList = it
-            }
+            })
 
             pictureOfDay.observe(viewLifecycleOwner, {
                 handlerImageOfDay(it)
+            })
+
+            errorAPI.observe(viewLifecycleOwner, { message ->
+                showToast(message)
+            })
+
+            errorNoInternetConnection.observe(viewLifecycleOwner, { message ->
+                showToast(message)
             })
 
             navigateToDetailFragment.observe(viewLifecycleOwner, { asteroid ->
@@ -96,5 +105,9 @@ class MainFragment : Fragment(R.layout.fragment_main), OnClickAsteroid {
         } else {
             binding.textView.text = getString(R.string.image_not_available)
         }
+    }
+
+    private fun showToast(message: String?) {
+        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 }
