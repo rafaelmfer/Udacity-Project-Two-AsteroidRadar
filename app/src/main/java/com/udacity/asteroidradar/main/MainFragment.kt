@@ -101,7 +101,7 @@ class MainFragment : Fragment(R.layout.fragment_main), OnClickAsteroid {
                 .load(pictureOfDay.url)
                 .into(binding.activityMainImageOfTheDay)
 
-            binding.activityMainImageOfTheDay.contentDescription = pictureOfDay.title
+            binding.activityMainImageOfTheDay.contentDescription = getString(R.string.nasa_picture_of_day_content_description_format, pictureOfDay.title)
         } else {
             binding.textView.text = getString(R.string.image_not_available)
         }
