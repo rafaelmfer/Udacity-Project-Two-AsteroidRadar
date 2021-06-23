@@ -10,6 +10,7 @@ interface OnClickAsteroid {
     fun onClickAsteroid(selectedAsteroid: Asteroid)
 }
 
+//TODO Futuramente usar DiffUtil, sugestão dada pelo Revisor
 class MainAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     var asteroidList = listOf<Asteroid>()
