@@ -13,7 +13,9 @@ import com.udacity.asteroidradar.database.AsteroidsDatabase
 import com.udacity.asteroidradar.database.asDomainModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import org.json.JSONException
 import org.json.JSONObject
+import retrofit2.HttpException
 
 class NasaRepository(private val database: AsteroidsDatabase) {
 
@@ -21,8 +23,14 @@ class NasaRepository(private val database: AsteroidsDatabase) {
 
     suspend fun getAsteroids() {
         withContext(Dispatchers.IO) {
-            val asteroidsFromApi = parseAsteroidsJsonResult(JSONObject(NasaApi.retrofitServiceScalars.getAsteroids()))
-            database.asteroidDatabaseDao.insertAll(*asteroidsFromApi.asDatabaseModel())
+            try {
+                val asteroidsFromApi = parseAsteroidsJsonResult(JSONObject(NasaApi.retrofitServiceScalars.getAsteroids()))
+                database.asteroidDatabaseDao.insertAll(*asteroidsFromApi.asDatabaseModel())
+            } catch (exception: HttpException) {
+
+            } catch (exception: JSONException) {
+
+            }
         }
     }
 
